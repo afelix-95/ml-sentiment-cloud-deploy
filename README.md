@@ -19,7 +19,6 @@ This project demonstrates an end-to-end machine learning pipeline for sentiment 
 │   ├── preprocess.py                   # Script for data cleaning and tokenization
 │   ├── train_bert.py                   # Script for BERT model training
 │   └── register_model.py               # Script for model registration in Azure ML
-├── .azureml/config.json                # Optional: Azure ML workspace config
 ├── README.md                           # This file
 └── LICENSE                             # MIT License
 ```
@@ -30,6 +29,9 @@ This project demonstrates an end-to-end machine learning pipeline for sentiment 
 - **GitHub Repository**: Fork or clone this repository.
 - **Secrets**:
   - `AZURE_CREDENTIALS`: Azure service principal JSON (Contributor role on ML workspace).
+  - `AZURE_SUBSCRIPTION_ID`: Your Azure subscription ID.
+  - `AZURE_RESOURCE_GROUP`: Your resource group name.
+  - `AZURE_WORKSPACE_NAME`: Your Azure ML workspace name.
   - `KAGGLE_USERNAME` and `KAGGLE_KEY`: For downloading the IMDb dataset.
 - **Tools**:
   - Azure CLI with `ml` extension (`az extension add -n ml -y`).
@@ -44,13 +46,15 @@ This project demonstrates an end-to-end machine learning pipeline for sentiment 
    ```
 
 2. **Configure Azure ML**:
-   - Set up an Azure ML workspace.
-   - Update `.azureml/config.json` with your workspace details or pass them in `azureml-job.yml`.
+   - Set up an Azure ML workspace. You can create new compute resources or use serverless compute.
 
 3. **Set Up GitHub Secrets**:
    - In your GitHub repository, go to **Settings > Secrets and variables > Actions > New repository secret**.
    - Add:
      - `AZURE_CREDENTIALS`: Service principal JSON.
+     - `AZURE_SUBSCRIPTION_ID`: Your Azure subscription ID.
+     - `AZURE_RESOURCE_GROUP`: Your resource group name.
+     - `AZURE_WORKSPACE_NAME`: Your Azure ML workspace name.
      - `KAGGLE_USERNAME`: Your Kaggle username.
      - `KAGGLE_KEY`: Your Kaggle API key.
 
