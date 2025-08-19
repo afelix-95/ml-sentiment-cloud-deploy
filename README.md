@@ -18,9 +18,10 @@ This project demonstrates an end-to-end machine learning pipeline for sentiment 
 ├── src/
 │   ├── preprocess.py                   # Script for data cleaning and tokenization
 │   ├── train_bert.py                   # Script for BERT model training
-│   ├── register_model.py               # Script for model registration in Azure ML
+│   └── register_model.py               # Script for model registration in Azure ML
 ├── .azureml/config.json                # Optional: Azure ML workspace config
 ├── README.md                           # This file
+└── LICENSE                             # MIT License
 ```
 
 ## Prerequisites
