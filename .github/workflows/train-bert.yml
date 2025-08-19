@@ -1,0 +1,60 @@
+name: Train BERT Model on Azure ML
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install azure-ai-ml azure-identity azure-cli kaggle huggingface-hub transformers datasets
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Download Kaggle Dataset
+        env:
+          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+        run: |
+          kaggle datasets download -d lakshmi25npathi/imdb-dataset-of-50k-movie-reviews -p data/
+          unzip data/imdb-dataset-of-50k-movie-reviews.zip -d data/
+
+      - name: Upload Kaggle Dataset to Azure ML
+        env:
+          AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
+          AZURE_WORKSPACE_NAME: ${{ secrets.AZURE_WORKSPACE_NAME }}
+        run: |
+          az ml data create --name imdb-data --type uri_folder --path ./data --workspace-name ${{ secrets.AZURE_WORKSPACE_NAME }} --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }}
+
+      - name: Submit Azure ML Job
+        env:
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
+          AZURE_WORKSPACE_NAME: ${{ secrets.AZURE_WORKSPACE_NAME }}
+        run: |
+          az extension add -n ml -y
+          az ml job create --file azureml-job.yml --workspace-name ${{ secrets.AZURE_WORKSPACE_NAME }} --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --subscription-id ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Upload Artifacts (Optional)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ml-logs
+          path: .azureml/logs/
