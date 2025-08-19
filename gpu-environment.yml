@@ -6,13 +6,15 @@ conda_file:
   name: bert-gpu-env
   channels:
     - conda-forge
+    - pytorch
   dependencies:
     - python=3.10
     - pip
+    - 'pytorch::pytorch==2.0.1'
+    - 'pytorch::torchaudio'
+    - 'pytorch::torchvision'
     - pip:
         - azure-ai-ml
         - azure-identity
         - transformers==4.44.0
         - datasets==2.20.0
-        - torch==2.0.1
-        - cudatoolkit==11.6
