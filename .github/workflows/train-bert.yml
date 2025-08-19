@@ -36,21 +36,6 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Create or Update CPU Environment
-        env:
-          AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
-          AZURE_WORKSPACE_NAME: ${{ secrets.AZURE_WORKSPACE_NAME }}
-        run: |
-          az extension add -n ml -y
-          az ml environment create --file cpu-environment.yml --workspace-name ${{ secrets.AZURE_WORKSPACE_NAME }} --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} || echo "CPU Environment already exists or update failed"
-
-      - name: Create or Update GPU Environment
-        env:
-          AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
-          AZURE_WORKSPACE_NAME: ${{ secrets.AZURE_WORKSPACE_NAME }}
-        run: |
-          az ml environment create --file gpu-environment.yml --workspace-name ${{ secrets.AZURE_WORKSPACE_NAME }} --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} || echo "GPU Environment already exists or update failed"
-
       - name: Download Kaggle Dataset
         env:
           KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
@@ -64,6 +49,7 @@ jobs:
           AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
           AZURE_WORKSPACE_NAME: ${{ secrets.AZURE_WORKSPACE_NAME }}
         run: |
+          az extension add -n ml -y
           az ml data create --name imdb-data --type uri_folder --path ./data --workspace-name ${{ secrets.AZURE_WORKSPACE_NAME }} --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }}
 
       - name: Submit Azure ML Job
