@@ -3,7 +3,7 @@ name: bert-cpu-env
 version: 1
 image: mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu20.04
 conda_file:
-  name: bert-env
+  name: bert-cpu-env
   channels:
     - conda-forge
   dependencies:
