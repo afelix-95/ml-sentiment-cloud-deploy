@@ -11,10 +11,9 @@ conda_file:
     - python=3.10
     - pip
     - pip:
+      - torch
       - azure-ai-ml
-      - azureml-core
       - azure-identity
       - scikit-learn
       - transformers
       - datasets
-      - torch==2.0.1
