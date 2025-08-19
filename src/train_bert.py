@@ -1,10 +1,15 @@
 import argparse
 import os
+import shutil
+import tempfile
 from azure.ai.ml import MLClient
 from azure.identity import DefaultAzureCredential
 from transformers import AutoModelForSequenceClassification, Trainer, TrainingArguments
-from datasets import load_from_disk
+from datasets import load_from_disk, disable_caching
 from sklearn.metrics import accuracy_score, f1_score
+
+# Disable caching to prevent writing to input directory
+disable_caching()
 
 def compute_metrics(eval_pred):
     logits, labels = eval_pred
@@ -39,7 +44,15 @@ def main(input_data, model_output):
         print(f"No existing model {model_name} found, starting from pre-trained BERT")
         model = AutoModelForSequenceClassification.from_pretrained('bert-base-uncased', num_labels=2)
 
-    dataset = load_from_disk(input_data)
+    # Create a temporary directory for dataset
+    temp_dir = tempfile.mkdtemp(dir='/tmp')
+
+    # Copy input dataset to temporary directory
+    shutil.copytree(input_data, os.path.join(temp_dir, 'dataset'))
+    dataset_path = os.path.join(temp_dir, 'dataset')
+
+    # Load dataset from temporary directory
+    dataset = load_from_disk(dataset_path)
     train_test = dataset.train_test_split(test_size=0.2)
 
     training_args = TrainingArguments(
@@ -51,7 +64,9 @@ def main(input_data, model_output):
         save_strategy='epoch',
         load_best_model_at_end=True,
         metric_for_best_model='accuracy',
-        report_to='azureml'
+        report_to='azureml',
+        # Avoid caching to prevent writes to read-only directories
+        disable_tqdm=False
     )
 
     trainer = Trainer(
@@ -64,6 +79,9 @@ def main(input_data, model_output):
 
     trainer.train()
     trainer.save_model(model_output)
+
+    # Clean up temporary directory
+    shutil.rmtree(temp_dir)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
