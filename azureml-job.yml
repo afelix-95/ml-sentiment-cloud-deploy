@@ -1,0 +1,49 @@
+$schema: https://azuremlschemas.azureedge.net/latest/pipelineJob.schema.json
+type: pipeline
+display_name: BERT Sentiment Training Pipeline
+experiment_name: imdb-sentiment-bert
+
+inputs:
+  dataset_path: 
+    type: uri_folder
+    path: azureml://datastores/workspaceblobstore/paths/imdb-data/ # Path to your dataset in Blob Storage
+
+jobs:
+  preprocess:
+    type: command
+    code: ./src  # Folder with your scripts
+    command: >-
+      python preprocess.py 
+      --input_data ${{inputs.dataset_path}} 
+      --output_data ${{outputs.preprocessed_data}}
+    environment: azureml:AzureML-sklearn-1.0-ubuntu20.04-py38-cpu@latest  # Or custom env with Transformers
+    inputs:
+      dataset_path: ${{parent.inputs.dataset_path}}
+    outputs:
+      preprocessed_data:
+        type: uri_folder
+
+  train:
+    type: command
+    code: ./src
+    command: >-
+      python train_bert.py 
+      --input_data ${{inputs.preprocessed_data}} 
+      --model_output ${{outputs.model_output}}
+    environment: azureml:AzureML-pytorch-1.13-py38-cuda11.6-gpu@latest  # GPU env with Transformers
+    inputs:
+      preprocessed_data: ${{parent.jobs.preprocess.outputs.preprocessed_data}}
+    outputs:
+      model_output:
+        type: mlflow_model
+
+  register:
+    type: command
+    code: ./src
+    command: >-
+      python register_model.py 
+      --model_path ${{inputs.model_output}} 
+      --model_name bert-sentiment-model
+    environment: azureml:AzureML-sklearn-1.0-ubuntu20.04-py38-cpu@latest
+    inputs:
+      model_output: ${{parent.jobs.train.outputs.model_output}}
