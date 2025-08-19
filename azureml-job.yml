@@ -19,7 +19,7 @@ jobs:
       python preprocess.py 
       --input_data ${{inputs.dataset_path}} 
       --output_data ${{outputs.preprocessed_data}}
-    environment: azureml://registries/azureml/environments/sklearn-1.5/versions/31
+    environment: azureml:bert-cpu-env@latest  # Custom env with Transformers
     inputs:
       dataset_path: ${{parent.inputs.dataset_path}}
     outputs:
@@ -33,7 +33,7 @@ jobs:
       python train_bert.py 
       --input_data ${{inputs.preprocessed_data}} 
       --model_output ${{outputs.model_output}}
-    environment: azureml://registries/azureml/environments/acpt-pytorch-2.2-cuda12.1/versions/40
+    environment: azureml:bert-gpu-env@latest  # GPU env with Transformers
     inputs:
       preprocessed_data: ${{parent.jobs.preprocess.outputs.preprocessed_data}}
     outputs:
@@ -47,6 +47,6 @@ jobs:
       python register_model.py 
       --model_path ${{inputs.model_output}} 
       --model_name bert-sentiment-model
-    environment: azureml://registries/azureml/environments/sklearn-1.5/versions/31
+    environment: azureml:bert-cpu-env@latest
     inputs:
       model_output: ${{parent.jobs.train.outputs.model_output}}
