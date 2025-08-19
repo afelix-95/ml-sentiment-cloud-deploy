@@ -6,7 +6,7 @@ experiment_name: imdb-sentiment-bert
 inputs:
   dataset_path: 
     type: uri_folder
-    path: azureml://datastores/workspaceblobstore/paths/imdb-data/ # Path to your dataset in Blob Storage
+    path: azureml:imdb-data:1 # Path to your dataset in Blob Storage
 
 settings:
  default_compute: azureml:serverless
