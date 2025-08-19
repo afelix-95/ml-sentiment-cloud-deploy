@@ -3,8 +3,16 @@ name: Train BERT Model on Azure ML
 on:
   push:
     branches: [main]
+    paths:
+      - 'src/preprocess.py'
+      - 'src/train_bert.py'
+      - 'azureml-job.yml'
   pull_request:
     branches: [main]
+    paths:
+      - 'src/preprocess.py'
+      - 'src/train_bert.py'
+      - 'azureml-job.yml'
   workflow_dispatch:
 
 jobs:
