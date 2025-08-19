@@ -29,7 +29,6 @@ This project demonstrates an end-to-end machine learning pipeline for sentiment 
 - **GitHub Repository**: Fork or clone this repository.
 - **Secrets**:
   - `AZURE_CREDENTIALS`: Azure service principal JSON (Contributor role on ML workspace).
-  - `AZURE_SUBSCRIPTION_ID`: Your Azure subscription ID.
   - `AZURE_RESOURCE_GROUP`: Your resource group name.
   - `AZURE_WORKSPACE_NAME`: Your Azure ML workspace name.
   - `KAGGLE_USERNAME` and `KAGGLE_KEY`: For downloading the IMDb dataset.
@@ -52,7 +51,6 @@ This project demonstrates an end-to-end machine learning pipeline for sentiment 
    - In your GitHub repository, go to **Settings > Secrets and variables > Actions > New repository secret**.
    - Add:
      - `AZURE_CREDENTIALS`: Service principal JSON.
-     - `AZURE_SUBSCRIPTION_ID`: Your Azure subscription ID.
      - `AZURE_RESOURCE_GROUP`: Your resource group name.
      - `AZURE_WORKSPACE_NAME`: Your Azure ML workspace name.
      - `KAGGLE_USERNAME`: Your Kaggle username.
@@ -72,7 +70,7 @@ The pipeline is defined in `azureml-job.yml` and executed via `train-bert.yml` i
 - **Manual**: Use GitHub Actions' "Run workflow" button (`workflow_dispatch`).
 - **Local Testing**:
   ```bash
-  az ml job create --file azureml-job.yml --workspace-name your-ml-workspace --resource-group your-resource-group --subscription-id your-subscription-id
+  az ml job create --file azureml-job.yml --workspace-name your-ml-workspace --resource-group your-resource-group
   ```
 
 ## Scripts
@@ -102,7 +100,7 @@ dependencies:
 
 Register it:
 ```bash
-az ml environment create --file environment.yml --workspace-name your-ml-workspace --resource-group your-resource-group
+az ml environment create --conda-file environment.yml --workspace-name your-ml-workspace --resource-group your-resource-group
 ```
 
 ## Monitoring and Outputs
