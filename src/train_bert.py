@@ -1,6 +1,6 @@
 import argparse
 import os
-from azureml.core import Workspace, Model
+from azure.ai.ml import MLClient
 from azure.identity import DefaultAzureCredential
 from transformers import AutoModelForSequenceClassification, Trainer, TrainingArguments
 from datasets import load_from_disk
@@ -15,22 +15,27 @@ def compute_metrics(eval_pred):
     }
 
 def main(input_data, model_output):
-    # Connect to Azure ML workspace
-    ws = Workspace(
+    # Connect to Azure ML workspace using MLClient
+    ml_client = MLClient(
+        credential=DefaultAzureCredential(),
         subscription_id=os.environ.get("AZURE_SUBSCRIPTION_ID"),
         resource_group=os.environ.get("AZURE_RESOURCE_GROUP"),
         workspace_name=os.environ.get("AZURE_WORKSPACE_NAME"),
-        auth=DefaultAzureCredential()
     )
 
     # Check for existing model
     model_name = "bert-sentiment-model"
+    model_path = None
     try:
-        model = Model(ws, name=model_name)
-        model.download(target_dir=model_output)
-        print(f"Loading existing model {model_name}")
-        model = AutoModelForSequenceClassification.from_pretrained(model_output)
-    except:
+        model_list = ml_client.models.list(name=model_name)
+        if model_list:
+            model = model_list[0]
+            model_path = ml_client.models.download(name=model.name, version=model.version, download_path=model_output)
+            print(f"Loading existing model {model_name}")
+            model = AutoModelForSequenceClassification.from_pretrained(model_output)
+        else:
+            raise Exception("Model not found")
+    except Exception as e:
         print(f"No existing model {model_name} found, starting from pre-trained BERT")
         model = AutoModelForSequenceClassification.from_pretrained('bert-base-uncased', num_labels=2)
 

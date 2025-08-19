@@ -1,7 +1,8 @@
 import argparse
 import os
-from azureml.core import Workspace, Model
+from azure.ai.ml import MLClient
 from azure.identity import DefaultAzureCredential
+from azure.ai.ml.entities import Model as AzureMLModel
 
 def main(model_path, model_name):
     # Fetch workspace details from environment variables
@@ -12,16 +13,21 @@ def main(model_path, model_name):
     if not all([subscription_id, resource_group, workspace_name]):
         raise ValueError("Missing required environment variables: AZURE_SUBSCRIPTION_ID, AZURE_RESOURCE_GROUP, or AZURE_WORKSPACE_NAME")
 
-    # Authenticate using DefaultAzureCredential (leverages GitHub Actions credentials)
-    ws = Workspace(
+    # Authenticate and create MLClient
+    ml_client = MLClient(
+        credential=DefaultAzureCredential(),
         subscription_id=subscription_id,
         resource_group=resource_group,
         workspace_name=workspace_name,
-        auth=DefaultAzureCredential()
     )
 
     # Register the model
-    Model.register(workspace=ws, model_path=model_path, model_name=model_name)
+    model = AzureMLModel(
+        name=model_name,
+        path=model_path,
+        description="Registered model using MLClient"
+    )
+    ml_client.models.create_or_update(model)
     print(f"Model {model_name} registered successfully in workspace {workspace_name}")
 
 if __name__ == "__main__":
