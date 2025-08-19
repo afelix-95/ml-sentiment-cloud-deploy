@@ -8,6 +8,9 @@ inputs:
     type: uri_folder
     path: azureml://datastores/workspaceblobstore/paths/imdb-data/ # Path to your dataset in Blob Storage
 
+settings:
+ default_compute: azureml:serverless
+
 jobs:
   preprocess:
     type: command
