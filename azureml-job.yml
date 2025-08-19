@@ -33,7 +33,7 @@ jobs:
       python train_bert.py 
       --input_data ${{inputs.preprocessed_data}} 
       --model_output ${{outputs.model_output}}
-    environment: azureml:bert-gpu-env@latest  # GPU env with Transformers
+    environment: azureml://registries/azureml/environments/acpt-pytorch-2.2-cuda12.1/versions/40  # GPU env with Transformers
     inputs:
       preprocessed_data: ${{parent.jobs.preprocess.outputs.preprocessed_data}}
     outputs:
