@@ -3,8 +3,16 @@ name: Train BERT Model on Azure ML
 on:
   push:
     branches: [main]
+    paths:
+      - 'src/preprocess.py'
+      - 'src/train_bert.py'
+      - 'azureml-job.yml'
   pull_request:
     branches: [main]
+    paths:
+      - 'src/preprocess.py'
+      - 'src/train_bert.py'
+      - 'azureml-job.yml'
   workflow_dispatch:
 
 jobs:
@@ -34,14 +42,14 @@ jobs:
           AZURE_WORKSPACE_NAME: ${{ secrets.AZURE_WORKSPACE_NAME }}
         run: |
           az extension add -n ml -y
-          az ml environment create --conda-file cpu-environment.yml --workspace-name ${{ secrets.AZURE_WORKSPACE_NAME }} --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} || echo "CPU Environment already exists or update failed"
+          az ml environment create --file cpu-environment.yml --workspace-name ${{ secrets.AZURE_WORKSPACE_NAME }} --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} || echo "CPU Environment already exists or update failed"
 
       - name: Create or Update GPU Environment
         env:
           AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
           AZURE_WORKSPACE_NAME: ${{ secrets.AZURE_WORKSPACE_NAME }}
         run: |
-          az ml environment create --conda-file gpu-environment.yml --workspace-name ${{ secrets.AZURE_WORKSPACE_NAME }} --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} || echo "GPU Environment already exists or update failed"
+          az ml environment create --file gpu-environment.yml --workspace-name ${{ secrets.AZURE_WORKSPACE_NAME }} --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} || echo "GPU Environment already exists or update failed"
 
       - name: Download Kaggle Dataset
         env:
