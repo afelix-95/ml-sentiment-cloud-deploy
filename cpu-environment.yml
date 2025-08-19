@@ -1,4 +1,5 @@
 name: bert-cpu-env
+type: conda
 channels:
   - conda-forge
 dependencies:

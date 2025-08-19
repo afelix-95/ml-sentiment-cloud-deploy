@@ -1,4 +1,5 @@
 name: bert-gpu-env
+type: conda
 channels:
   - conda-forge
 dependencies:
