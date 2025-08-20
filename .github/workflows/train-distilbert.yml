@@ -5,13 +5,13 @@ on:
     branches: [main]
     paths:
       - 'src/preprocess.py'
-      - 'src/train_bert.py'
+      - 'src/train_distilbert.py'
       - 'azureml-job.yml'
   pull_request:
     branches: [main]
     paths:
       - 'src/preprocess.py'
-      - 'src/train_bert.py'
+      - 'src/train_distilbert.py'
       - 'azureml-job.yml'
   workflow_dispatch:
 
