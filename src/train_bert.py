@@ -29,7 +29,7 @@ def main(input_data, model_output):
     )
 
     # Check for existing model
-    model_name = "bert-sentiment-model"
+    model_name = "distilbert-sentiment-model"
     model_path = None
     try:
         model_list = ml_client.models.list(name=model_name)
@@ -41,8 +41,8 @@ def main(input_data, model_output):
         else:
             raise Exception("Model not found")
     except Exception as e:
-        print(f"No existing model {model_name} found, starting from pre-trained BERT")
-        model = AutoModelForSequenceClassification.from_pretrained('bert-base-uncased', num_labels=2)
+        print(f"No existing model {model_name} found, starting from pre-trained DistilBERT")
+        model = AutoModelForSequenceClassification.from_pretrained('distilbert-base-uncased', num_labels=2)
 
     # Create a temporary directory for dataset
     temp_dir = tempfile.mkdtemp(dir='/tmp')
@@ -53,17 +53,18 @@ def main(input_data, model_output):
 
     # Load dataset from temporary directory
     dataset = load_from_disk(dataset_path)
-    train_test = dataset.train_test_split(test_size=0.2)
+    train_test = dataset.train_test_split(test_size=0.3)
 
     training_args = TrainingArguments(
         output_dir=model_output,
         num_train_epochs=3,
-        per_device_train_batch_size=8,
-        per_device_eval_batch_size=8,
+        per_device_train_batch_size=16,
+        per_device_eval_batch_size=16,
         eval_strategy='epoch',
         save_strategy='epoch',
         load_best_model_at_end=True,
         metric_for_best_model='accuracy',
+        fp16=True,  # Use mixed precision training
         # Avoid caching to prevent writes to read-only directories
         disable_tqdm=False
     )

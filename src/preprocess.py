@@ -8,11 +8,11 @@ def main(input_data, output_data):
     df['label'] = df['sentiment'].map({'positive': 1, 'negative': 0})
     dataset = Dataset.from_pandas(df[['review', 'label']])
     
-    tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
+    tokenizer = AutoTokenizer.from_pretrained('distilbert-base-uncased')
     def tokenize(examples):
-        return tokenizer(examples['review'], padding='max_length', truncation=True, max_length=512)
+        return tokenizer(examples['review'], padding='max_length', truncation=True, max_length=256)
     
-    tokenized_dataset = dataset.map(tokenize, batched=True)
+    tokenized_dataset = dataset.map(tokenize, batched=True, remove_columns=['review'])
     tokenized_dataset.save_to_disk(output_data)
 
 if __name__ == "__main__":
