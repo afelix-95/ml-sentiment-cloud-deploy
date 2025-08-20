@@ -16,4 +16,5 @@ conda_file:
       - azure-identity
       - scikit-learn
       - transformers
+      - accelerate
       - datasets
