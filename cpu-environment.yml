@@ -1,9 +1,9 @@
 $schema: https://azuremlschemas.azureedge.net/latest/environment.schema.json
-name: bert-cpu-env
+name: distilbert-cpu-env
 version: 1
 image: mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu20.04
 conda_file:
-  name: bert-cpu-env
+  name: distilbert-cpu-env
   channels:
     - conda-forge
   dependencies:

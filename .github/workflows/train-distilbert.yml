@@ -1,4 +1,4 @@
-name: Train BERT Model on Azure ML
+name: Train DistilBERT Model on Azure ML
 
 on:
   push:

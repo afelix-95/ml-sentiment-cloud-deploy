@@ -1,25 +1,25 @@
 # End-to-End ML Model Deployment with Azure ML and GitHub Actions
 
-This project demonstrates an end-to-end machine learning pipeline for sentiment analysis using the IMDb movie reviews dataset from Kaggle. It leverages Azure Machine Learning (Azure ML) to preprocess data, fine-tune a BERT model, and register the model, with automation through GitHub Actions for CI/CD.
+This project demonstrates an end-to-end machine learning pipeline for sentiment analysis using the IMDb movie reviews dataset from Kaggle. It leverages Azure Machine Learning (Azure ML) to preprocess data, fine-tune a DistilBERT model, and register the model, with automation through GitHub Actions for CI/CD.
 
 ## Project Overview
 
 - **Objective**: Build and deploy a sentiment analysis model to classify IMDb reviews as positive or negative.
 - **Dataset**: IMDb Dataset of 50K Movie Reviews from Kaggle, containing balanced positive and negative reviews.
-- **Model**: Fine-tuned BERT (`bert-base-uncased`) using Hugging Face Transformers.
+- **Model**: Fine-tuned DistilBERT (`distilbert-base-uncased`) using Hugging Face Transformers.
 - **Platform**: Azure ML for scalable training and model management.
 - **Automation**: GitHub Actions for CI/CD, triggering data ingestion, preprocessing, training, and model registration.
 
 ## Repository Structure
 
 ```
-├── .github/workflows/train-bert.yml    # GitHub Actions workflow for CI/CD
+├── .github/workflows/train-distilbert.yml    # GitHub Actions workflow for CI/CD
 ├── azureml-job.yml                     # Azure ML pipeline definition
 ├── cpu-environment.yml                 # Conda environment for CPU jobs
 ├── gpu-environment.yml                 # Conda environment for GPU jobs
 ├── src/
 │   ├── preprocess.py                   # Script for data cleaning and tokenization
-│   ├── train_bert.py                   # Script for BERT model training
+│   ├── train_distilbert.py                   # Script for DistilBERT model training
 │   └── register_model.py               # Script for model registration in Azure ML
 ├── README.md                           # This file
 └── LICENSE                             # MIT License
@@ -60,11 +60,11 @@ This project demonstrates an end-to-end machine learning pipeline for sentiment 
 
 ## Pipeline Workflow
 
-The pipeline is defined in `azureml-job.yml` and executed via `train-bert.yml` in GitHub Actions. Steps include:
+The pipeline is defined in `azureml-job.yml` and executed via `train-distilbert.yml` in GitHub Actions. Steps include:
 
 1. **Data Ingestion**: Downloads IMDb dataset from Kaggle and uploads to Azure ML datastore.
-2. **Preprocessing**: Cleans reviews, tokenizes using BERT tokenizer, and saves as a Hugging Face dataset.
-3. **Training**: Fine-tunes BERT for binary classification (positive/negative) on a GPU cluster.
+2. **Preprocessing**: Cleans reviews, tokenizes using DistilBERT tokenizer, and saves as a Hugging Face dataset.
+3. **Training**: Fine-tunes DistilBERT for binary classification (positive/negative) on a GPU cluster.
 4. **Model Registration**: Registers the trained model in Azure ML.
 
 ### Triggering the Pipeline
@@ -78,7 +78,7 @@ The pipeline is defined in `azureml-job.yml` and executed via `train-bert.yml` i
 ## Scripts
 
 - **preprocess.py**: Loads the IMDb CSV, maps sentiments to labels (positive=1, negative=0), tokenizes reviews, and saves the dataset.
-- **train_bert.py**: Fine-tunes BERT with Hugging Face Trainer, logs metrics (accuracy, F1-score) to Azure ML.
+- **train_distilbert.py**: Fine-tunes DistilBERT with Hugging Face Trainer, logs metrics (accuracy, F1-score) to Azure ML.
 - **register_model.py**: Registers the trained model in Azure ML registry.
 
 ## Dependencies
@@ -90,7 +90,7 @@ The dependencies for this project are managed using two environment files:
 
 **cpu-environment.yml**
 ```yaml
-name: bert-cpu-env
+name: distilbert-cpu-env
 channels:
   - conda-forge
 dependencies:
@@ -105,7 +105,7 @@ dependencies:
 
 **gpu-environment.yml**
 ```yaml
-name: bert-gpu-env
+name: distilbert-gpu-env
 channels:
   - conda-forge
   - pytorch
@@ -130,9 +130,9 @@ az ml environment create --file gpu-environment.yml --workspace-name your-ml-wor
 
 ## Monitoring and Outputs
 
-- **Azure ML Studio**: View job status, logs, and metrics under **Jobs** > `imdb-sentiment-bert`.
+- **Azure ML Studio**: View job status, logs, and metrics under **Jobs** > `imdb-sentiment-distilbert`.
 - **GitHub Actions**: Check workflow logs for errors; artifacts (logs) are uploaded if configured.
-- **Model Registry**: Registered model (`bert-sentiment-model`) appears in Azure ML **Models**.
+- **Model Registry**: Registered model (`distilbert-sentiment-model`) appears in Azure ML **Models**.
 
 ## Future Enhancements
 

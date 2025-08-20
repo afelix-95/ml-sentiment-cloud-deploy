@@ -1,7 +1,7 @@
 $schema: https://azuremlschemas.azureedge.net/latest/pipelineJob.schema.json
 type: pipeline
-display_name: BERT Sentiment Training Pipeline
-experiment_name: imdb-sentiment-bert
+display_name: DistilBERT Sentiment Training Pipeline
+experiment_name: imdb-sentiment-distilbert
 
 inputs:
   dataset_path: 
@@ -19,7 +19,7 @@ jobs:
       python preprocess.py 
       --input_data ${{inputs.dataset_path}} 
       --output_data ${{outputs.preprocessed_data}}
-    environment: azureml:bert-cpu-env@latest  # Custom env with Transformers
+    environment: azureml:distilbert-cpu-env@latest  # Custom env with Transformers
     inputs:
       dataset_path: ${{parent.inputs.dataset_path}}
     outputs:
@@ -30,10 +30,10 @@ jobs:
     type: command
     code: ./src
     command: >-
-      python train_bert.py 
+      python train_distilbert.py 
       --input_data ${{inputs.preprocessed_data}} 
       --model_output ${{outputs.model_output}}
-    environment: azureml:bert-gpu-env@latest  # GPU env with Transformers
+    environment: azureml:distilbert-gpu-env@latest  # GPU env with Transformers
     inputs:
       preprocessed_data: ${{parent.jobs.preprocess.outputs.preprocessed_data}}
     outputs:
@@ -46,7 +46,7 @@ jobs:
     command: >-
       python register_model.py 
       --model_path ${{inputs.model_output}} 
-      --model_name bert-sentiment-model
-    environment: azureml:bert-cpu-env@latest
+      --model_name distilbert-sentiment-model
+    environment: azureml:distilbert-cpu-env@latest
     inputs:
       model_output: ${{parent.jobs.train.outputs.model_output}}
