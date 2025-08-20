@@ -12,5 +12,5 @@ conda_file:
     - pip:
         - azure-ai-ml
         - azure-identity
-        - transformers==4.44.0
-        - datasets==2.20.0
+        - transformers
+        - datasets

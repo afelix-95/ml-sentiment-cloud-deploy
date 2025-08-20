@@ -15,6 +15,8 @@ This project demonstrates an end-to-end machine learning pipeline for sentiment 
 ```
 ├── .github/workflows/train-bert.yml    # GitHub Actions workflow for CI/CD
 ├── azureml-job.yml                     # Azure ML pipeline definition
+├── cpu-environment.yml                 # Conda environment for CPU jobs
+├── gpu-environment.yml                 # Conda environment for GPU jobs
 ├── src/
 │   ├── preprocess.py                   # Script for data cleaning and tokenization
 │   ├── train_bert.py                   # Script for BERT model training
@@ -34,7 +36,7 @@ This project demonstrates an end-to-end machine learning pipeline for sentiment 
   - `KAGGLE_USERNAME` and `KAGGLE_KEY`: For downloading the IMDb dataset.
 - **Tools**:
   - Azure CLI with `ml` extension (`az extension add -n ml -y`).
-  - Python 3.10 with dependencies (`azure-ai-ml`, `transformers`, `datasets`, `kaggle`).
+  - Python 3.10 with dependencies (see environment files below).
 
 ## Setup Instructions
 
@@ -81,10 +83,14 @@ The pipeline is defined in `azureml-job.yml` and executed via `train-bert.yml` i
 
 ## Dependencies
 
-Defined in the Azure ML environment (e.g., `azureml:AzureML-pytorch-1.13-py38-cuda11.6-gpu@latest`). For custom environments, create an `environment.yml`:
+The dependencies for this project are managed using two environment files:
 
+- **cpu-environment.yml**: For CPU-based jobs (e.g., preprocessing)
+- **gpu-environment.yml**: For GPU-based jobs (e.g., model training)
+
+**cpu-environment.yml**
 ```yaml
-name: bert-env
+name: bert-cpu-env
 channels:
   - conda-forge
 dependencies:
@@ -93,14 +99,33 @@ dependencies:
   - pip:
       - azure-ai-ml
       - azure-identity
-      - transformers==4.44.0
-      - datasets==2.20.0
-      - torch==2.0.1
+      - transformers
+      - datasets
 ```
 
-Register it:
+**gpu-environment.yml**
+```yaml
+name: bert-gpu-env
+channels:
+  - conda-forge
+  - pytorch
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+      - torch
+      - azure-ai-ml
+      - azure-identity
+      - scikit-learn
+      - transformers
+      - accelerate
+      - datasets
+```
+
+You can create and register these environments in Azure ML using:
 ```bash
-az ml environment create --conda-file environment.yml --workspace-name your-ml-workspace --resource-group your-resource-group
+az ml environment create --file cpu-environment.yml --workspace-name your-ml-workspace --resource-group your-resource-group
+az ml environment create --file gpu-environment.yml --workspace-name your-ml-workspace --resource-group your-resource-group
 ```
 
 ## Monitoring and Outputs
