@@ -14,3 +14,5 @@ conda_file:
         - azure-identity
         - transformers
         - datasets
+        - mlflow
+        - azureml-mlflow
