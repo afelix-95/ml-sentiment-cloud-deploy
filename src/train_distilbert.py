@@ -7,6 +7,8 @@ from azure.identity import DefaultAzureCredential
 from transformers import AutoModelForSequenceClassification, Trainer, TrainingArguments
 from datasets import load_from_disk, disable_caching
 from sklearn.metrics import accuracy_score, f1_score
+import mlflow
+import mlflow.transformers
 
 # Disable caching to prevent writing to input directory
 disable_caching()
@@ -79,6 +81,16 @@ def main(input_data, model_output):
 
     trainer.train()
     trainer.save_model(model_output)
+
+    # Log the model in MLflow format for Azure ML registration
+    mlflow.set_tracking_uri("azureml://mlflow")
+    with mlflow.start_run():
+        mlflow.transformers.log_model(
+            transformers_model=model,
+            artifact_path="model",
+            task="text-classification",
+            input_example=train_test['test'][0]
+        )
 
     # Clean up temporary directory
     shutil.rmtree(temp_dir)
