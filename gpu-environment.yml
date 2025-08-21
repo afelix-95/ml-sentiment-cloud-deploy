@@ -13,6 +13,7 @@ conda_file:
     - pip:
       - torch
       - azure-ai-ml
+      - mlflow
       - azure-identity
       - scikit-learn
       - transformers
