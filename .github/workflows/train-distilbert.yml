@@ -33,7 +33,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install azure-ai-ml azure-identity azure-cli kaggle huggingface-hub transformers datasets
+          pip install azure-ai-ml azure-identity azure-cli kaggle
 
       - name: Azure Login
         uses: azure/login@v2
