@@ -7,12 +7,16 @@ on:
       - 'src/preprocess.py'
       - 'src/train_distilbert.py'
       - 'azureml-job.yml'
+      - 'gpu-environment.yml'
+      - 'cpu-environment.yml'
   pull_request:
     branches: [main]
     paths:
       - 'src/preprocess.py'
       - 'src/train_distilbert.py'
       - 'azureml-job.yml'
+      - 'gpu-environment.yml'
+      - 'cpu-environment.yml'
   workflow_dispatch:
 
 jobs:
