@@ -83,16 +83,22 @@ def main(input_data, model_output):
     trainer.save_model(model_output)
 
     # Log the model in MLflow format for Azure ML registration
-    with mlflow.start_run():
+    with mlflow.start_run() as run:
         mlflow.transformers.log_model(
             transformers_model=model,
             artifact_path="model",
             task="text-classification",
             input_example=train_test['test'][0]
         )
+        mlflow_model_dir = os.path.join(mlflow.get_artifact_uri(), "model")
+        print("MLflow model directory:", mlflow_model_dir)
 
     # Clean up temporary directory
     shutil.rmtree(temp_dir)
+
+    if os.path.exists(model_output):
+        shutil.rmtree(model_output)
+    shutil.copytree(mlflow_model_dir, model_output)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
