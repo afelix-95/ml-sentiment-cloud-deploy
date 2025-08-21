@@ -83,7 +83,6 @@ def main(input_data, model_output):
     trainer.save_model(model_output)
 
     # Log the model in MLflow format for Azure ML registration
-    mlflow.set_tracking_uri("azureml://mlflow")
     with mlflow.start_run():
         mlflow.transformers.log_model(
             transformers_model=model,
