@@ -32,14 +32,14 @@ def main(input_data, model_output):
 
     # Check for existing model
     model_name = "distilbert-sentiment-model"
-    model_path = None
     try:
         model_list = ml_client.models.list(name=model_name)
         if model_list:
             model = model_list[0]
-            model_path = ml_client.models.download(name=model.name, version=model.version, download_path=model_output)
+            temp_model_path = os.path.join(tempfile.gettempdir(), "downloaded_model")
+            model_path = ml_client.models.download(name=model.name, version=model.version, download_path=temp_model_path)
             print(f"Loading existing model {model_name}")
-            model = AutoModelForSequenceClassification.from_pretrained(model_output)
+            model = AutoModelForSequenceClassification.from_pretrained(model_path)
         else:
             raise Exception("Model not found")
     except Exception as e:
@@ -50,15 +50,18 @@ def main(input_data, model_output):
     temp_dir = tempfile.mkdtemp(dir='/tmp')
 
     # Copy input dataset to temporary directory
-    shutil.copytree(input_data, os.path.join(temp_dir, 'dataset'))
     dataset_path = os.path.join(temp_dir, 'dataset')
+    shutil.copytree(input_data, dataset_path)
 
     # Load dataset from temporary directory
     dataset = load_from_disk(dataset_path)
-    train_test = dataset.train_test_split(test_size=0.3)
+    train_test = dataset.train_test_split(test_size=0.5)
+
+    # Create a temporary directory for trainer model saving
+    temp_model_dir = tempfile.mkdtemp(dir='/tmp')
 
     training_args = TrainingArguments(
-        output_dir=model_output,
+        output_dir=temp_model_dir,  # Save checkpoints to temp directory
         num_train_epochs=3,
         per_device_train_batch_size=16,
         per_device_eval_batch_size=16,
@@ -81,11 +84,13 @@ def main(input_data, model_output):
 
     trainer.train()
 
+    # Save the trainer model to temp_model_dir
+    trainer.save_model(temp_model_dir)
+
     # Clear model_output directory if it exists
     if os.path.exists(model_output):
         shutil.rmtree(model_output)
     os.makedirs(model_output)
-    trainer.save_model(model_output)
 
     # Save and log the model as an MLflow artifact
     with mlflow.start_run() as run:
@@ -97,8 +102,9 @@ def main(input_data, model_output):
         )
         mlflow.log_artifact(model_output, artifact_path="model")
 
-    # Clean up temporary directory
+    # Clean up temporary directories
     shutil.rmtree(temp_dir)
+    shutil.rmtree(temp_model_dir)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
