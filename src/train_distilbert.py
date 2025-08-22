@@ -80,6 +80,11 @@ def main(input_data, model_output):
     )
 
     trainer.train()
+
+    # Clear model_output directory if it exists
+    if os.path.exists(model_output):
+        shutil.rmtree(model_output)
+    os.makedirs(model_output)
     trainer.save_model(model_output)
 
     # Save and log the model as an MLflow artifact
