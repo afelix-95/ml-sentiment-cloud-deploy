@@ -4,7 +4,7 @@ import shutil
 import tempfile
 from azure.ai.ml import MLClient
 from azure.identity import DefaultAzureCredential
-from transformers import AutoModelForSequenceClassification, Trainer, TrainingArguments
+from transformers import AutoModelForSequenceClassification, Trainer, TrainingArguments, AutoTokenizer
 from datasets import load_from_disk, disable_caching
 from sklearn.metrics import accuracy_score, f1_score
 import mlflow
@@ -40,11 +40,13 @@ def main(input_data, model_output):
             model_path = ml_client.models.download(name=model.name, version=model.version, download_path=temp_model_path)
             print(f"Loading existing model {model_name}")
             model = AutoModelForSequenceClassification.from_pretrained(model_path)
+            tokenizer = AutoTokenizer.from_pretrained(model_path)
         else:
             raise Exception("Model not found")
     except Exception as e:
         print(f"No existing model {model_name} found, starting from pre-trained DistilBERT")
         model = AutoModelForSequenceClassification.from_pretrained('distilbert-base-uncased', num_labels=2)
+        tokenizer = AutoTokenizer.from_pretrained('distilbert-base-uncased')
 
     # Create a temporary directory for dataset
     temp_dir = tempfile.mkdtemp(dir='/tmp')
@@ -86,6 +88,7 @@ def main(input_data, model_output):
 
     # Save the trainer model to temp_model_dir
     trainer.save_model(temp_model_dir)
+    tokenizer.save_pretrained(temp_model_dir)  # Save tokenizer
 
     # Clear model_output directory if it exists
     if os.path.exists(model_output):
@@ -95,7 +98,7 @@ def main(input_data, model_output):
     # Save and log the model as an MLflow artifact
     with mlflow.start_run() as run:
         mlflow.transformers.save_model(
-            transformers_model={"model": model, "tokenizer": None},
+            transformers_model={"model": model, "tokenizer": tokenizer},
             path=model_output,
             task="text-classification",
             input_example=train_test['test'][0]
