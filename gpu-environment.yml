@@ -12,6 +12,7 @@ conda_file:
     - pip
     - pip:
       - torch
+      - torchvision
       - azure-ai-ml
       - mlflow
       - azureml-mlflow
