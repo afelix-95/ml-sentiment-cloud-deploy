@@ -20,6 +20,10 @@ jobs:
       --input_data ${{inputs.dataset_path}} 
       --output_data ${{outputs.preprocessed_data}}
     environment: azureml:distilbert-cpu-env@latest  # Custom env with Transformers
+    environment_variables:
+      AZURE_SUBSCRIPTION_ID: ${{secrets.AZURE_SUBSCRIPTION_ID}}
+      AZURE_RESOURCE_GROUP: ${{secrets.AZURE_RESOURCE_GROUP}}
+      AZURE_WORKSPACE_NAME: ${{secrets.AZURE_WORKSPACE_NAME}}
     inputs:
       dataset_path: ${{parent.inputs.dataset_path}}
     outputs:
@@ -34,6 +38,10 @@ jobs:
       --input_data ${{inputs.preprocessed_data}} 
       --model_output ${{outputs.model_output}}
     environment: azureml:distilbert-gpu-env@latest  # GPU env with Transformers
+    environment_variables:
+      AZURE_SUBSCRIPTION_ID: ${{secrets.AZURE_SUBSCRIPTION_ID}}
+      AZURE_RESOURCE_GROUP: ${{secrets.AZURE_RESOURCE_GROUP}}
+      AZURE_WORKSPACE_NAME: ${{secrets.AZURE_WORKSPACE_NAME}}
     inputs:
       preprocessed_data: ${{parent.jobs.preprocess.outputs.preprocessed_data}}
     outputs:
@@ -48,5 +56,9 @@ jobs:
       --model_path ${{inputs.model_output}} 
       --model_name distilbert-sentiment-model
     environment: azureml:distilbert-cpu-env@latest
+    environment_variables:
+      AZURE_SUBSCRIPTION_ID: ${{secrets.AZURE_SUBSCRIPTION_ID}}
+      AZURE_RESOURCE_GROUP: ${{secrets.AZURE_RESOURCE_GROUP}}
+      AZURE_WORKSPACE_NAME: ${{secrets.AZURE_WORKSPACE_NAME}}
     inputs:
       model_output: ${{parent.jobs.train.outputs.model_output}}
