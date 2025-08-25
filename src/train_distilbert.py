@@ -64,7 +64,7 @@ def main(input_data, model_output):
 
     training_args = TrainingArguments(
         output_dir=temp_model_dir,  # Save checkpoints to temp directory
-        num_train_epochs=3,
+        num_train_epochs=1,
         per_device_train_batch_size=16,
         per_device_eval_batch_size=16,
         eval_strategy='epoch',
@@ -103,7 +103,6 @@ def main(input_data, model_output):
             task="text-classification",
             input_example=train_test['test'][0]
         )
-        mlflow.log_artifact(model_output, artifact_path="model")
 
     # Clean up temporary directories
     shutil.rmtree(temp_dir)
