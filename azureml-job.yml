@@ -6,7 +6,7 @@ experiment_name: imdb-sentiment-distilbert
 inputs:
   dataset_path: 
     type: uri_folder
-    path: azureml:imdb-data:1 # Path to your dataset in Blob Storage
+    path: azureml:imdb-data:1 # Path to dataset in Blob Storage
 
 settings:
  default_compute: azureml:serverless
@@ -14,12 +14,12 @@ settings:
 jobs:
   preprocess:
     type: command
-    code: ./src  # Folder with your scripts
+    code: ./src  # Folder with scripts
     command: >-
       python preprocess.py 
       --input_data ${{inputs.dataset_path}} 
       --output_data ${{outputs.preprocessed_data}}
-    environment: azureml:distilbert-cpu-env@latest  # Custom env with Transformers
+    environment: azureml:distilbert-gpu-env@latest  # GPU env with Transformers
     environment_variables:
       AZURE_SUBSCRIPTION_ID: ${{parent.inputs.AZURE_SUBSCRIPTION_ID}}
       AZURE_RESOURCE_GROUP: ${{parent.inputs.AZURE_RESOURCE_GROUP}}
@@ -37,7 +37,7 @@ jobs:
       python train_distilbert.py 
       --input_data ${{inputs.preprocessed_data}} 
       --model_output ${{outputs.model_output}}
-    environment: azureml:distilbert-gpu-env@latest  # GPU env with Transformers
+    environment: azureml:distilbert-gpu-env@latest  
     environment_variables:
       AZURE_SUBSCRIPTION_ID: ${{parent.inputs.AZURE_SUBSCRIPTION_ID}}
       AZURE_RESOURCE_GROUP: ${{parent.inputs.AZURE_RESOURCE_GROUP}}
@@ -55,7 +55,7 @@ jobs:
       python register_model.py 
       --model_path ${{inputs.model_output}} 
       --model_name distilbert-sentiment-model
-    environment: azureml:distilbert-cpu-env@latest
+    environment: azureml:distilbert-gpu-env@latest
     environment_variables:
       AZURE_SUBSCRIPTION_ID: ${{parent.inputs.AZURE_SUBSCRIPTION_ID}}
       AZURE_RESOURCE_GROUP: ${{parent.inputs.AZURE_RESOURCE_GROUP}}
