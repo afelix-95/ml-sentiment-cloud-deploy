@@ -78,16 +78,7 @@ jobs:
           AZUREML_ARM_RESOURCEGROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
           AZUREML_ARM_WORKSPACE_NAME: ${{ secrets.AZURE_WORKSPACE_NAME }}
         run: |
-          az ml job create --file azureml-job.yml --workspace-name ${{ secrets.AZURE_WORKSPACE_NAME }} --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-            --set jobs.preprocess.environment_variables.AZUREML_ARM_SUBSCRIPTION=${{ secrets.AZURE_SUBSCRIPTION_ID }} \
-            --set jobs.preprocess.environment_variables.AZUREML_ARM_RESOURCEGROUP=${{ secrets.AZURE_RESOURCE_GROUP }} \
-            --set jobs.preprocess.environment_variables.AZUREML_ARM_WORKSPACE_NAME=${{ secrets.AZURE_WORKSPACE_NAME }} \
-            --set jobs.train.environment_variables.AZUREML_ARM_SUBSCRIPTION=${{ secrets.AZURE_SUBSCRIPTION_ID }} \
-            --set jobs.train.environment_variables.AZUREML_ARM_RESOURCEGROUP=${{ secrets.AZURE_RESOURCE_GROUP }} \
-            --set jobs.train.environment_variables.AZUREML_ARM_WORKSPACE_NAME=${{ secrets.AZURE_WORKSPACE_NAME }} \
-            --set jobs.register.environment_variables.AZUREML_ARM_SUBSCRIPTION=${{ secrets.AZURE_SUBSCRIPTION_ID }} \
-            --set jobs.register.environment_variables.AZUREML_ARM_RESOURCEGROUP=${{ secrets.AZURE_RESOURCE_GROUP }} \
-            --set jobs.register.environment_variables.AZUREML_ARM_WORKSPACE_NAME=${{ secrets.AZURE_WORKSPACE_NAME }}
+          az ml job create --file azureml-job.yml --workspace-name ${{ secrets.AZURE_WORKSPACE_NAME }} --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }}
 
       - name: Upload Artifacts (Optional)
         if: always()
