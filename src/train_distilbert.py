@@ -23,7 +23,12 @@ def compute_metrics(eval_pred):
 
 def main(input_data, model_output):
     # Connect to Azure ML workspace using MLClient
-    ml_client = MLClient.from_config(credential=DefaultAzureCredential())
+    ml_client = MLClient(
+        credential=DefaultAzureCredential(),
+        subscription_id=os.environ.get("AZUREML_ARM_SUBSCRIPTION"),
+        resource_group_name=os.environ.get("AZUREML_ARM_RESOURCEGROUP"),
+        workspace_name=os.environ.get("AZUREML_ARM_WORKSPACE_NAME"),
+    )
 
     # Check for existing model
     model_name = "distilbert-sentiment-model"

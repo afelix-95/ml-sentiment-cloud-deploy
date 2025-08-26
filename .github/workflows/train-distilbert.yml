@@ -74,9 +74,8 @@ jobs:
 
       - name: Submit Azure ML Job
         env:
-          AZUREML_ARM_SUBSCRIPTION: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          AZUREML_ARM_RESOURCEGROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
-          AZUREML_ARM_WORKSPACE_NAME: ${{ secrets.AZURE_WORKSPACE_NAME }}
+          AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
+          AZURE_WORKSPACE_NAME: ${{ secrets.AZURE_WORKSPACE_NAME }}
         run: |
           az ml job create --file azureml-job.yml --workspace-name ${{ secrets.AZURE_WORKSPACE_NAME }} --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }}
 
