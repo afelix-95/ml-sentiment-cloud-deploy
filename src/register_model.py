@@ -5,17 +5,17 @@ from azure.identity import DefaultAzureCredential
 from azure.ai.ml.entities import Model as AzureMLModel
 
 def main(model_path, model_name):
-    print("AZURE_SUBSCRIPTION_ID:", os.environ.get("AZURE_SUBSCRIPTION_ID"))
-    print("AZURE_RESOURCE_GROUP:", os.environ.get("AZURE_RESOURCE_GROUP"))
-    print("AZURE_WORKSPACE_NAME:", os.environ.get("AZURE_WORKSPACE_NAME"))
+    print("AZUREML_ARM_SUBSCRIPTION:", os.environ.get("AZUREML_ARM_SUBSCRIPTION"))
+    print("AZUREML_ARM_RESOURCEGROUP:", os.environ.get("AZUREML_ARM_RESOURCEGROUP"))
+    print("AZUREML_ARM_WORKSPACE_NAME:", os.environ.get("AZUREML_ARM_WORKSPACE_NAME"))
 
     try:
         credential = DefaultAzureCredential()
         ml_client = MLClient(
             credential=credential,
-            subscription_id=os.environ.get("AZURE_SUBSCRIPTION_ID"),
-            resource_group=os.environ.get("AZURE_RESOURCE_GROUP"),
-            workspace_name=os.environ.get("AZURE_WORKSPACE_NAME"),
+            subscription_id=os.environ.get("AZUREML_ARM_SUBSCRIPTION"),
+            resource_group_name=os.environ.get("AZUREML_ARM_RESOURCEGROUP"),
+            workspace_name=os.environ.get("AZUREML_ARM_WORKSPACE_NAME"),
         )
         model = AzureMLModel(
             name=model_name,

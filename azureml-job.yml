@@ -21,9 +21,9 @@ jobs:
       --output_data ${{outputs.preprocessed_data}}
     environment: azureml:distilbert-gpu-env@latest  # GPU env with Transformers
     environment_variables:
-      AZURE_SUBSCRIPTION_ID: ${{parent.inputs.AZURE_SUBSCRIPTION_ID}}
-      AZURE_RESOURCE_GROUP: ${{parent.inputs.AZURE_RESOURCE_GROUP}}
-      AZURE_WORKSPACE_NAME: ${{parent.inputs.AZURE_WORKSPACE_NAME}}
+      AZUREML_ARM_SUBSCRIPTION: ${{parent.inputs.AZUREML_ARM_SUBSCRIPTION}}
+      AZUREML_ARM_RESOURCEGROUP: ${{parent.inputs.AZUREML_ARM_RESOURCEGROUP}}
+      AZUREML_ARM_WORKSPACE_NAME: ${{parent.inputs.AZUREML_ARM_WORKSPACE_NAME}}
     inputs:
       dataset_path: ${{parent.inputs.dataset_path}}
     outputs:
@@ -39,9 +39,9 @@ jobs:
       --model_output ${{outputs.model_output}}
     environment: azureml:distilbert-gpu-env@latest  
     environment_variables:
-      AZURE_SUBSCRIPTION_ID: ${{parent.inputs.AZURE_SUBSCRIPTION_ID}}
-      AZURE_RESOURCE_GROUP: ${{parent.inputs.AZURE_RESOURCE_GROUP}}
-      AZURE_WORKSPACE_NAME: ${{parent.inputs.AZURE_WORKSPACE_NAME}}
+      AZUREML_ARM_SUBSCRIPTION: ${{parent.inputs.AZUREML_ARM_SUBSCRIPTION}}
+      AZUREML_ARM_RESOURCEGROUP: ${{parent.inputs.AZUREML_ARM_RESOURCEGROUP}}
+      AZUREML_ARM_WORKSPACE_NAME: ${{parent.inputs.AZUREML_ARM_WORKSPACE_NAME}}
     inputs:
       preprocessed_data: ${{parent.jobs.preprocess.outputs.preprocessed_data}}
     outputs:
@@ -57,8 +57,8 @@ jobs:
       --model_name distilbert-sentiment-model
     environment: azureml:distilbert-gpu-env@latest
     environment_variables:
-      AZURE_SUBSCRIPTION_ID: ${{parent.inputs.AZURE_SUBSCRIPTION_ID}}
-      AZURE_RESOURCE_GROUP: ${{parent.inputs.AZURE_RESOURCE_GROUP}}
-      AZURE_WORKSPACE_NAME: ${{parent.inputs.AZURE_WORKSPACE_NAME}}
+      AZUREML_ARM_SUBSCRIPTION: ${{parent.inputs.AZUREML_ARM_SUBSCRIPTION}}
+      AZUREML_ARM_RESOURCEGROUP: ${{parent.inputs.AZUREML_ARM_RESOURCEGROUP}}
+      AZUREML_ARM_WORKSPACE_NAME: ${{parent.inputs.AZUREML_ARM_WORKSPACE_NAME}}
     inputs:
       model_output: ${{parent.jobs.train.outputs.model_output}}

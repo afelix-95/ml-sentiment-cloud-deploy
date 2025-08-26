@@ -25,9 +25,9 @@ def main(input_data, model_output):
     # Connect to Azure ML workspace using MLClient
     ml_client = MLClient(
         credential=DefaultAzureCredential(),
-        subscription_id=os.environ.get("AZURE_SUBSCRIPTION_ID"),
-        resource_group=os.environ.get("AZURE_RESOURCE_GROUP"),
-        workspace_name=os.environ.get("AZURE_WORKSPACE_NAME"),
+        subscription_id=os.environ.get("AZUREML_ARM_SUBSCRIPTION"),
+        resource_group_name=os.environ.get("AZUREML_ARM_RESOURCEGROUP"),
+        workspace_name=os.environ.get("AZUREML_ARM_WORKSPACE_NAME"),
     )
 
     # Check for existing model
