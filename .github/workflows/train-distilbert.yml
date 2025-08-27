@@ -57,6 +57,32 @@ jobs:
         run: |
           az ml environment create --file gpu-environment.yml --workspace-name ${{ secrets.AZURE_WORKSPACE_NAME }} --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} || echo "GPU Environment already exists or update failed"
 
+      - name: Create Compute Instance
+        env:
+          AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
+          AZURE_WORKSPACE_NAME: ${{ secrets.AZURE_WORKSPACE_NAME }}
+        run: |
+          az ml compute create --name cpu-instance \
+            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+            --workspace-name ${{ secrets.AZURE_WORKSPACE_NAME }} \
+            --type computeinstance \
+            --size Standard_DS3_v2 \
+            --identity-type SystemAssigned || echo "Compute instance already exists"
+
+      - name: Create Compute Cluster
+        env:
+          AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
+          AZURE_WORKSPACE_NAME: ${{ secrets.AZURE_WORKSPACE_NAME }}
+        run: |
+          az ml compute create --name gpu-cluster \
+            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+            --workspace-name ${{ secrets.AZURE_WORKSPACE_NAME }} \
+            --type amlcompute \
+            --size Standard_NC6s_v3 \
+            --min-instances 0 \
+            --max-instances 2 \
+            --identity-type SystemAssigned || echo "Compute cluster already exists"
+
       - name: Download Kaggle Dataset
         env:
           KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
