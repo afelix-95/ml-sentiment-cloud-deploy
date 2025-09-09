@@ -50,3 +50,16 @@ jobs:
     compute: azureml:cpu-instance
     inputs:
       model_output: ${{parent.jobs.train.outputs.model_output}}
+
+  deploy:
+    type: command
+    code: ./src
+    command: >-
+      python deploy_model.py 
+      --model_name distilbert-sentiment-model 
+      --endpoint_name distilbert-endpoint 
+      --deployment_name distilbert-deployment
+    environment: azureml:distilbert-gpu-env@latest
+    compute: azureml:gpu-cluster
+    inputs:
+      model_name: distilbert-sentiment-model
