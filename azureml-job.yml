@@ -17,7 +17,7 @@ jobs:
       --input_data ${{inputs.dataset_path}} 
       --output_data ${{outputs.preprocessed_data}}
     environment: azureml:distilbert-cpu-env@latest  
-    compute: azureml:cpu-instance
+    compute: azureml:cpu-instance-ml
     inputs:
       dataset_path: ${{parent.inputs.dataset_path}}
     outputs:
@@ -47,7 +47,7 @@ jobs:
       --model_path ${{inputs.model_output}} 
       --model_name distilbert-sentiment-model
     environment: azureml:distilbert-cpu-env@latest
-    compute: azureml:cpu-instance
+    compute: azureml:cpu-instance-ml
     inputs:
       model_output: ${{parent.jobs.train.outputs.model_output}}
 
@@ -60,6 +60,6 @@ jobs:
       --endpoint_name distilbert-endpoint 
       --deployment_name distilbert-deployment
     environment: azureml:distilbert-cpu-env@latest
-    compute: azureml:cpu-instance
+    compute: azureml:cpu-instance-ml
     inputs:
       model_name: distilbert-sentiment-model

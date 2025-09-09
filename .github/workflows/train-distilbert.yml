@@ -64,7 +64,7 @@ jobs:
           AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
           AZURE_WORKSPACE_NAME: ${{ secrets.AZURE_WORKSPACE_NAME }}
         run: |
-          az ml compute create --name cpu-instance \
+          az ml compute create --name cpu-instance-ml \
             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
             --workspace-name ${{ secrets.AZURE_WORKSPACE_NAME }} \
             --type computeinstance \
