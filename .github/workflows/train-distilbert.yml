@@ -80,7 +80,7 @@ jobs:
             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
             --workspace-name ${{ secrets.AZURE_WORKSPACE_NAME }} \
             --type amlcompute \
-            --size Standard_NC6s_v3 \
+            --size Standard_NC4as_T4_v3 \
             --min-instances 0 \
             --max-instances 2 \
             --identity-type SystemAssigned || echo "Compute cluster already exists"
