@@ -1,6 +1,6 @@
 # End-to-End ML Model Deployment with Azure ML and GitHub Actions
 
-This project demonstrates an end-to-end machine learning pipeline for sentiment analysis using the IMDb movie reviews dataset from Kaggle. It leverages Azure Machine Learning (Azure ML) to preprocess data, fine-tune a DistilBERT model, and register the model, with automation through GitHub Actions for CI/CD.
+This project demonstrates an end-to-end machine learning pipeline for sentiment analysis using the IMDb movie reviews dataset from Kaggle. It leverages Azure Machine Learning (Azure ML) to preprocess data, fine-tune a DistilBERT model, register the model and deploy it, with automation through GitHub Actions for CI/CD.
 
 ## Project Overview
 
@@ -20,6 +20,7 @@ This project demonstrates an end-to-end machine learning pipeline for sentiment 
 ├── src/
 │   ├── preprocess.py                   # Script for data cleaning and tokenization
 │   ├── train_distilbert.py                   # Script for DistilBERT model training
+│   ├── deploy_model.py                       # Script for deploying the model to Azure ML endpoint
 │   └── register_model.py               # Script for model registration in Azure ML
 ├── README.md                           # This file
 └── LICENSE                             # MIT License
@@ -66,6 +67,7 @@ The pipeline is defined in `azureml-job.yml` and executed via `train-distilbert.
 2. **Preprocessing**: Cleans reviews, tokenizes using DistilBERT tokenizer, and saves as a Hugging Face dataset.
 3. **Training**: Fine-tunes DistilBERT for binary classification (positive/negative) on a GPU cluster.
 4. **Model Registration**: Registers the trained model in Azure ML.
+5. **Model Deployment**: Deploys the registered model to an Azure ML Managed Online Endpoint using `deploy_model.py`.
 
 ### Triggering the Pipeline
 - **Automatic**: Pushes to `main` or pull requests trigger the workflow.
@@ -80,6 +82,7 @@ The pipeline is defined in `azureml-job.yml` and executed via `train-distilbert.
 - **preprocess.py**: Loads the IMDb CSV, maps sentiments to labels (positive=1, negative=0), tokenizes reviews, and saves the dataset.
 - **train_distilbert.py**: Fine-tunes DistilBERT with Hugging Face Trainer, logs metrics (accuracy, F1-score) to Azure ML.
 - **register_model.py**: Registers the trained model in Azure ML registry.
+- **deploy_model.py**: Deploys the registered model to an Azure ML endpoint. This script creates a managed online endpoint and deployment using the Azure ML Python SDK. You can configure endpoint and deployment names via command-line arguments.
 
 ## Dependencies
 
@@ -133,6 +136,7 @@ az ml environment create --file gpu-environment.yml --workspace-name your-ml-wor
 - **Azure ML Studio**: View job status, logs, and metrics under **Jobs** > `imdb-sentiment-distilbert`.
 - **GitHub Actions**: Check workflow logs for errors; artifacts (logs) are uploaded if configured.
 - **Model Registry**: Registered model (`distilbert-sentiment-model`) appears in Azure ML **Models**.
+- **Endpoints**: Deployed endpoint (`distilbert-endpoint`) appears in Azure ML **Endpoints**. You can test the endpoint in the Azure ML Studio UI or via REST API.
 
 ## Future Enhancements
 
