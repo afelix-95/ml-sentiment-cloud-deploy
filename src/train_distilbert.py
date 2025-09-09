@@ -57,14 +57,14 @@ def main(input_data, model_output):
 
     # Load dataset from temporary directory
     dataset = load_from_disk(dataset_path)
-    train_test = dataset.train_test_split(test_size=0.5)
+    train_test = dataset.train_test_split(test_size=0.7)
 
     # Create a temporary directory for trainer model saving
     temp_model_dir = tempfile.mkdtemp(dir='/tmp')
 
     training_args = TrainingArguments(
         output_dir=temp_model_dir,  # Save checkpoints to temp directory
-        num_train_epochs=1,
+        num_train_epochs=3,
         per_device_train_batch_size=16,
         per_device_eval_batch_size=16,
         eval_strategy='epoch',
