@@ -50,6 +50,10 @@ jobs:
     compute: azureml:cpu-instance-ml
     inputs:
       model_output: ${{parent.jobs.train.outputs.model_output}}
+    outputs:
+      registration_status:
+        type: uri_file
+        path: ./status.txt
 
   deploy:
     type: command
@@ -62,4 +66,5 @@ jobs:
     environment: azureml:distilbert-cpu-env@latest
     compute: azureml:cpu-instance-ml
     inputs:
+      registration_status: ${{parent.jobs.register.outputs.registration_status}}
       model_name: distilbert-sentiment-model

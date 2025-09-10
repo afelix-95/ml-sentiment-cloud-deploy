@@ -71,7 +71,6 @@ def main(input_data, model_output):
         save_strategy='epoch',
         load_best_model_at_end=True,
         metric_for_best_model='accuracy',
-        fp16=True,  # Use mixed precision training
         # Avoid caching to prevent writes to read-only directories
         disable_tqdm=False
     )
