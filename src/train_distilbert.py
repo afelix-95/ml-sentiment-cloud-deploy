@@ -71,8 +71,10 @@ def main(input_data, model_output):
         save_strategy='epoch',
         load_best_model_at_end=True,
         metric_for_best_model='accuracy',
+        fp16=True,  # Enable mixed precision training
         # Avoid caching to prevent writes to read-only directories
-        disable_tqdm=False
+        disable_tqdm=False,
+        report_to="none"  # Disable default logging to avoid conflicts with MLflow
     )
 
     trainer = Trainer(
