@@ -55,7 +55,7 @@ jobs:
     outputs:
       registration_status:
         type: uri_file
-        path: ./registration_status.txt
+        path: azureml://datastores/workspaceblobstore/paths/registration_status.txt
 
   deploy:
     type: command
