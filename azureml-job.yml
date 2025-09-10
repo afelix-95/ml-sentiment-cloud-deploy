@@ -63,5 +63,5 @@ jobs:
     compute: azureml:cpu-instance-ml
     inputs:
       model_name: distilbert-sentiment-model
-      depends_on: 
-        - register
+    depends_on:
+      - register
