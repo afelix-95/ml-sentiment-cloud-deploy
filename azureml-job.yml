@@ -45,23 +45,24 @@ jobs:
     command: >-
       python register_model.py 
       --model_path ${{inputs.model_output}} 
-      --model_name distilbert-sentiment-model
+      --model_name ${{inputs.model_name}}
     environment: azureml:distilbert-cpu-env@latest
     compute: azureml:cpu-instance-ml
     inputs:
       model_output: ${{parent.jobs.train.outputs.model_output}}
+      model_name: distilbert-sentiment-model
 
   deploy:
     type: command
     code: ./src
     command: >-
       python deploy_model.py 
-      --model_name distilbert-sentiment-model 
-      --endpoint_name distilbert-endpoint 
-      --deployment_name distilbert-deployment
+      --model_name ${{inputs.model_name}} 
+      --endpoint_name ${{inputs.endpoint_name}} 
+      --deployment_name ${{inputs.deployment_name}}
     environment: azureml:distilbert-cpu-env@latest
     compute: azureml:cpu-instance-ml
     inputs:
-      model_name: distilbert-sentiment-model
-    depends_on:
-      - register
+      model_name: ${{parent.jobs.register.outputs.model_name}}
+      endpoint_name: distilbert-endpoint
+      deployment_name: distilbert-deployment
